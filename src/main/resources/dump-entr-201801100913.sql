@@ -1,4 +1,4 @@
-
+USE entreprise;
 
 DROP TABLE IF EXISTS `Employe`;
 CREATE TABLE `Employe` (
