@@ -5,13 +5,6 @@
  ## Initialisation interface EmployeRepository
  1. Créer l'interface EmployeRepository dans le package repository et la faire implémenter CrudRepository
 
-## Initialisation classe EmployeService
- 1. Créer la classe EmployeService dans le package service et déclarer un attribut employeRepository qui est automatiquement injecté par Spring.
- 2. Ajouter dans cette classe une méthode findById qui prend en paramètre un Long et qui renvoie l'employé correspondant à l'id passé en paramètre.
- 3. Ajouter dans cette classe une méthode countAllEmploye sans paramètre qui renvoie le nombre d'employés de la table
- 4. Ajouter une méthode creerEmploye prenant en paramètre un Employe et l'ajoutant dans la base (attention Employe est abstrait...)
- 5. Ajouter une méthode deleteEmploye prenant en paramètre un Long représentant l'identifiant technique de l'employé, et permettant de supprimer cet employé
-
 ## Suite interface EmployeRepository
  1. Déclarer les méthodes permettant d'effectuer les recherches suivantes :
   
