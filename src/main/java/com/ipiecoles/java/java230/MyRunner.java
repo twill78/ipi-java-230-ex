@@ -1,110 +1,97 @@
 package com.ipiecoles.java.java230;
 
+import com.ipiecoles.java.java230.exceptions.BatchException;
 import com.ipiecoles.java.java230.model.Employe;
-import com.ipiecoles.java.java230.model.Manager;
-import com.ipiecoles.java.java230.model.Technicien;
-import com.ipiecoles.java.java230.repository.CommercialRepository;
 import com.ipiecoles.java.java230.repository.EmployeRepository;
 import com.ipiecoles.java.java230.repository.ManagerRepository;
-import com.ipiecoles.java.java230.repository.TechnicienRepository;
-import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class MyRunner implements CommandLineRunner {
+
+    private static final String REGEX_MATRICULE = "^[MTC][0-9]{5}$";
+    private static final String REGEX_NOM = ".*";
+    private static final String REGEX_PRENOM = ".*";
+    private static final int NB_CHAMPS_MANAGER = 5;
+    private static final int NB_CHAMPS_TECHNICIEN = 7;
+    private static final String REGEX_MATRICULE_MANAGER = "^M[0-9]{5}$";
+    private static final int NB_CHAMPS_COMMERCIAL = 7;
 
     @Autowired
     private EmployeRepository employeRepository;
 
     @Autowired
-    private TechnicienRepository technicienRepository;
-
-    @Autowired
-    private CommercialRepository commercialRepository;
-
-    @Autowired
     private ManagerRepository managerRepository;
+
+    private List<Employe> employes = new ArrayList<>();
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void run(String... strings) throws Exception {
-        Connection connexion = initConnection();
-        Statement statement = connexion.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM Employe LIMIT 10");
-        while ( resultSet.next() ) {
-            print(resultSet.getString("nom"));
-            print(resultSet.getDate("dateEmbauche"));
-        }
-
-        /*Technicien t = technicienRepository.findOne(4L);
-        print(t);
-
-        Manager m = managerRepository.findOneWithEquipeById(43L);
-        print(m);
-        m.getEquipe().stream().forEach(MyRunner::print);
-        m.setPrenom(m.getPrenom().toUpperCase());
-        managerRepository.save(m);
-
-        print(employeRepository.count());
-
-        List<Employe> list = employeRepository.findByNomAndPrenom("Adam", "Laura");
-        list.stream().map(Employe::toString).forEach(MyRunner::print);
-
-        list = employeRepository.findByDateEmbaucheBefore(new LocalDate(2012,07,28));
-        list.stream().map(Employe::toString).forEach(MyRunner::print);
-
-        list = employeRepository.findByDateEmbaucheAfter(new LocalDate(2012,07,28));
-        list.stream().map(Employe::toString).forEach(MyRunner::print);
-
-        list = employeRepository.findBySalaireGreaterThanOrderBySalaireDesc(2000.0);
-        list.stream().map(Employe::toString).forEach(MyRunner::print);
-
-        list = employeRepository.findByNomOrPrenomAllIgnoreCase("adam");
-        list.stream().map(Employe::toString).forEach(MyRunner::print);
-
-        PageRequest pageRequest = new PageRequest(0, 5, Sort.Direction.ASC, "matricule");
-
-        Page<Technicien> techs = technicienRepository.findByNomIgnoreCase("adam", pageRequest);
-        while(pageRequest.next()){
-
-            techs.forEach(MyRunner::print);
-        }
-        print("coucou");
-        print("coucou3");
-        techs = technicienRepository.findByNomIgnoreCase("adam", pageRequest.next());
-        techs.forEach(MyRunner::print);
-
-        print(technicienRepository.findByNomOrPrenomAllIgnoreCase("adam").size());
-        print(employeRepository.findByNomOrPrenomAllIgnoreCase("adam").size());*/
-
+        String fileName = "employes.csv";
+        readFile(fileName);
+        //readFile(strings[0]);
     }
 
-    public java.sql.Connection initConnection(){
-        String url = "jdbc:mysql://localhost:3306/entreprise";
-        String user = "root";
-        String pwd = "root";
+    /**
+     * Méthode qui lit le fichier CSV en paramètre afin d'intégrer son contenu en BDD
+     * @param fileName Le nom du fichier (à mettre dans src/main/resources)
+     * @return une liste contenant les employés à insérer en BDD ou null si le fichier n'a pas pu être le
+     */
+    public List<Employe> readFile(String fileName) throws Exception {
+        Stream<String> stream;
+        stream = Files.lines(Paths.get(new ClassPathResource(fileName).getURI()));
+        //TODO
 
-        java.sql.Connection connexion = null;
-
-        try {
-            connexion = java.sql.DriverManager.getConnection(url, user, pwd);
-        } catch ( java.sql.SQLException e ) {
-            //Problème de connexion à la base !
-            print(e.getMessage());
-        }
-        return connexion;
+        return employes;
     }
 
-    public static void print(Object t) {
-        System.out.println(t);
+    /**
+     * Méthode qui regarde le premier caractère de la ligne et appelle la bonne méthode de création d'employé
+     * @param ligne la ligne à analyser
+     * @throws BatchException si le type d'employé n'a pas été reconnu
+     */
+    private void processLine(String ligne) throws BatchException {
+        //TODO
     }
+
+    /**
+     * Méthode qui crée un Commercial à partir d'une ligne contenant les informations d'un commercial et l'ajoute dans la liste globale des employés
+     * @param ligneCommercial la ligne contenant les infos du commercial à intégrer
+     * @throws BatchException s'il y a un problème sur cette ligne
+     */
+    private void processCommercial(String ligneCommercial) throws BatchException {
+        //TODO
+    }
+
+    /**
+     * Méthode qui crée un Manager à partir d'une ligne contenant les informations d'un manager et l'ajoute dans la liste globale des employés
+     * @param ligneManager la ligne contenant les infos du manager à intégrer
+     * @throws BatchException s'il y a un problème sur cette ligne
+     */
+    private void processManager(String ligneManager) throws BatchException {
+        //TODO
+    }
+
+    /**
+     * Méthode qui crée un Technicien à partir d'une ligne contenant les informations d'un technicien et l'ajoute dans la liste globale des employés
+     * @param ligneTechnicien la ligne contenant les infos du technicien à intégrer
+     * @throws BatchException s'il y a un problème sur cette ligne
+     */
+    private void processTechnicien(String ligneTechnicien) throws BatchException {
+        //TODO
+    }
+
 }
