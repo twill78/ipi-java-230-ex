@@ -1,4 +1,4 @@
-#Exercices sur les algos et les exceptions
+# Exercices sur les algos et les exceptions
 
 Le but de ce TP est de mettre en place les algorithmes nécessaires afin de pouvoir intégrer ce fichier CSV en BDD : 
 
